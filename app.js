@@ -9,7 +9,11 @@ app.use(express.urlencoded()); //use to parse data sent using the POST method
 
 
 app.get("/", function(req, res){
-   res.render("home");
+  res.render("home");
+});
+
+app.get("/itemDisplay", function(req, res){
+  res.render("itemDisplay");
 });
 
 
