@@ -6,15 +6,9 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
-// app.use(express.urlencoded()); //use to parse data sent using the POST method
-app.use(session({ secret: 'any word', cookie: { maxAge: 60000 }}));
+app.use('/public', express.static('public'));
+app.use(express.urlencoded()); //use to parse data sent using the POST method
 
-// app.use(myMiddleware);
-
-// function myMiddleware(req, res, next){
-//   console.log(new Date());
-//   next()
-// }
 
 //routes
 app.get("/", function(req, res){
@@ -30,7 +24,7 @@ app.get("/signup", function(req, res){
 });
 
 
-var PORT = process.env.PORT || 8000;
+var port = process.env.PORT || 8000;
 if (process.env.JAWSDB_URL) {
    var connection = mysql.createConnection(process.env.JAWSDB_URL);
 } else {
@@ -57,6 +51,6 @@ return conn;
 
 
 //starting server
-app.listen(PORT, function(){
-   console.log("Express server is running...");
-});
+app.listen(port, () => {
+   console.log(`Example app listening on port ${port}!`)
+ });
