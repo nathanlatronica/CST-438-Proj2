@@ -16,6 +16,14 @@ app.get("/", function(req, res){
   res.render("index");
 });
 
+app.get("/cart", function(req, res){
+  res.render("cart");
+});
+
+app.get("/profile", function(req, res){
+  res.render("profile");
+});
+
 app.get("/itemDisplay", function(req, res){
   res.render("itemDisplay");
 });
