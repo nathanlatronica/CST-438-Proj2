@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <!-- <head>
         <meta charset="utf-8">
         <title>Display Movie Information</title>
         <link rel="stylesheet" type = "text/css" href="app.css">
-    </head>
+    </head> -->
+    <%- include('partials/header') %>
     <body>
+        <div id="leftNav" class="topnav">
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+            <a href="/ItemDisplay">View Movies</a>
+            <a href="/cart">My Cart</a>
+            <a href="/profile">My Profile</a>
+        </div>
         <header>Movie List</header>
         <nav>
-            <ul>
-                <li>Movie 1</li>
+            <ul id="app">
+
+                <li v-for="movie in movies">
+                    {{ movie }}
+                </li>
+
+                <!-- <li>{{product}}</li>
                 <li>Movie 2</li>
                 <li>Movie 3</li>
                 <li>Movie 4</li>
@@ -18,10 +31,26 @@
                 <li>Movie 7</li> 
                 <li>Movie 8</li>
                 <li>Movie 9</li>
-                <li>Movie 10</li>
+                <li>Movie 10</li> -->
 
             </ul>
         </nav>
     </body>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script>
+        const app = new Vue({
+            el:'#app',
+            data: {
+                movies: [
+                    'Steve Carrel',
+                    'Micheal Bay',
+                    'Adam Sandler'
+                ]
+            },
+
+            
+        })
+    </script>
 
 </html>
