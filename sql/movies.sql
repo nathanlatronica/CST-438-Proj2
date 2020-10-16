@@ -20,7 +20,7 @@ INSERT INTO `loginInfo` (`id`, `username`, `password`) VALUES
 (6, 'Benjamin', 'Keller'),
 (7, 'Hellen', 'Franklin');
 
--- CREATE TABLE FOR VIDEO GAMES
+-- CREATE TABLE FOR MOVIES
 DROP TABLE IF EXISTS `movies`;
 CREATE TABLE `movies`(
     -- movie_id, title, genre, rating, ticketPrice, Director, Summary, poster;
