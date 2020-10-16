@@ -12,11 +12,12 @@ https://www.storyblok.com/tp/vue-dynamic-component-from-json
 
 Things our database should store. 
 
-#Users
+# Users
 1. Username
 2. Password
 3. list of movies they added 2 their cart
-#Movies
+
+# Movies
 1. Title of movie
 2. image url for movie
 3. Number of tickets left for movie lets say they start with 30
