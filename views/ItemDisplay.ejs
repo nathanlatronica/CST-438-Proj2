@@ -42,12 +42,15 @@
         const app = new Vue({
             el:'#app',
             data: {
-                movies: [
-                    'Steve Carrel',
-                    'Micheal Bay',
-                    'Adam Sandler'
-                ]
+                movies: []
             },
+            created(){
+                fetch('https://api.myjson.com/bins/74l63')
+                    .then(response => response.json())
+                    .then(json => {
+                        this.movies = json.movies
+                    })
+            }
 
             
         })
