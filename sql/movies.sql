@@ -20,7 +20,7 @@ INSERT INTO `loginInfo` (`id`, `username`, `password`) VALUES
 (6, 'Benjamin', 'Keller'),
 (7, 'Hellen', 'Franklin');
 
--- CREATE TABLE FOR VIDEO GAMES
+-- CREATE TABLE FOR MOVIES
 DROP TABLE IF EXISTS `movies`;
 CREATE TABLE `movies`(
     -- movie_id, title, genre, rating, ticketPrice, Director, Summary, poster;
@@ -35,12 +35,12 @@ CREATE TABLE `movies`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `videoGames` (`videogame_id`, `title`, `genre`, `rating`, `pricing`, `companyName`, `summary`, `cover`) VALUES
-(1, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'insert Image link'),
+(1, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'randoImage'),
 
-(2, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'insert Image link'),
+(2, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'randoImage'),
 
-(3, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'insert Image link');
-
+(3, 'Rando Movie', 'Action',  '9/10', '59.99', 'Micheal Bay', 'Random Movie Description', 'randoImage');
+'
 ALTER TABLE `loginInfo`
   ADD PRIMARY KEY (`id`);
 
