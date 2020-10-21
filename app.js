@@ -37,30 +37,83 @@ app.get("/signup", function(req, res){
 });
 
 
-if (process.env.JAWSDB_URL) {
-   var connection = mysql.createConnection(process.env.JAWSDB_URL);
-} else {
-   var connection = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "password",
-      database: "users_db"
-   })
+var connection = mysql.createConnection({
+  host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'kd892qz9jpxwqtxq',
+  password: 'kjjtymmpwpomk5ie',
+  database: 'yjwepa0cf8l7lsku'
+})
+
+
+function dbSetup() {
+  connection.connect()
+  //delete tables if they already exists
+  var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
+  connection.query(dropUsers, function (err, rows, fields) {
+    if (err) {
+      throw err
+    }
+  })
+
+  var createUsers = 'CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50), password VARCHAR(50), PRIMARY KEY (id));'
+  connection.query(createUsers, function (err, rows, fields) {
+    if (err) {
+      throw err
+    } else {
+      console.log("users table created")
+    }
+
+  })
+
+  //code to create the movies table
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating INT, director VARCHAR(255), summary VARCHAR(500), PRIMARY KEY (id));'
+  connection.query(createMovies, function (err, rows, fields) {
+    if (err) {
+      throw err
+    } else {
+      console.log("movies table created")
+    }
+
+  })
+
+  //create shopping cart table
+  var createCart = 'CREATE TABLE IF NOT EXISTS cart (id INT NOT NULL AUTO_INCREMENT, user_id INT NULL DEFAULT NULL, username VARCHAR(50), status VARCHAR(50), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES users(id));'
+  connection.query(createCart, function (err, rows, fields) {
+    if (err) {
+      throw err
+    } else {
+      console.log("cart table created")
+    }
+
+  })
+
+  //create table for items in shopping cart
+  var createCartItem = 'CREATE TABLE IF NOT EXISTS cartItem (id INT NOT NULL AUTO_INCREMENT, cart_id INT NOT NULL, productName VARCHAR(255), price DOUBLE, quantity INT, PRIMARY KEY (id), FOREIGN KEY (cart_id) REFERENCES cart(id));'
+  connection.query(createCartItem, function (err, rows, fields) {
+    if (err) {
+      throw err
+    } else {
+      console.log("cart item table created")
+    }
+
+  })
+
+//uncomment code below for insert testing, must drop rows or table afterwards
+
+  // var sql = "INSERT INTO users (username, password) VALUES ('Bob', '1234')";
+  // connection.query(sql, function (err, rows, fields) {
+  //   if (err) throw err;
+  //   console.log("1 record inserted");
+  // });
+  // connection.query("SELECT * FROM users", function (err, result, fields) {
+  //   if (err) throw err;
+  //   console.log(result[0]);
+  // });
+
+  connection.end()
 }
 
-function dbConnection(){
-
-   let conn = mysql.createConnection({
-                 host: "localhost",
-                 user: "root",
-             password: "password",
-             database: "users_db"
-       }); //createConnection
-
-return conn;
-
-}
-
+dbSetup()
 
 //starting server
 app.listen(port, () => {
