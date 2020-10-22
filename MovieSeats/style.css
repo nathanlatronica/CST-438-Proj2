@@ -8,10 +8,10 @@
 body {
     font-family: 'Lato', sans-serif;
     /* background-color: #242333; */
-    /* background: url("myke-simon-atsUqIm3wxo-unsplash.jpg"),
+    /* background: url("movie.jpg"),
         linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, 0.9)); */
     background: linear-gradient(rgba(0, 18, 50, 0.84), rgba(0, 0, 0, 0.95)),
-        url("./lloyd-dirks-4SLz_RCk6kQ-unsplash.jpg") bottom;
+        url("./movie.jpg") bottom;
     background-size: cover;
     color: #fff;
     display: flex;
