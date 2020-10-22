@@ -15,6 +15,9 @@ app.use(express.urlencoded()); //use to parse data sent using the POST method
 app.get("/", function(req, res){
   res.render("index");
 });
+app.get("/loggedIn", function(req, res){
+  res.render("loggedIn");
+});
 
 app.get("/cart", function(req, res){
   res.render("cart");
