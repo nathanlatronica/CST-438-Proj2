@@ -10,6 +10,9 @@ https://vuejs.org/v2/guide/list.html
 https://stackoverflow.com/questions/50507180/display-json-data-in-dialog-with-vue-js
 https://www.storyblok.com/tp/vue-dynamic-component-from-json
 
+HandleBars:
+https://medium.com/@waelyasmina/a-guide-into-using-handlebars-with-your-express-js-application-22b944443b65
+
 Things our database should store. 
 
 # Users
