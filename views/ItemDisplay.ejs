@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <%- include('partials/header') %>
+    
     <body>
         <div id="leftNav" class="topnav">
             <a href="/login">Login</a>
@@ -11,11 +12,14 @@
         </div>
         <header>Movie List</header>
         <nav>
-            <ul id="app">
+
+            <div id="randoData"></div>
+
+            <!-- <ul id="app">
 
                 <li v-for="movie in movies">
                     {{ movie }}
-                </li>
+                </li> -->
 
                 <!-- <li>{{product}}</li>
                 <li>Movie 2</li>
@@ -28,27 +32,23 @@
                 <li>Movie 9</li>
                 <li>Movie 10</li> -->
 
-            </ul>
+            <!-- </ul> -->
         </nav>
+        <script type="text/javascript">
+            var sentence = "<p>My name is {{name}} and I live in {{city}}</p>";
+            var template = Handlebars.compile(sentence);
+            var data = template({name: "Geoffrey", city: "Hollister"});
+    
+            document.getElementById("randoData").innerHTML += data;
+        </script>
     </body>
 
-    <script src="https://unpkg.com/vue"></script>
-    <script>
-        const app = new Vue({
-            el:'#app',
-            data: {
-                movies: []
-            },
-            created(){
-                fetch('https://api.myjson.com/bins/74l63')
-                    .then(response => response.json())
-                    .then(json => {
-                        this.movies = json.movies
-                    })
-            }
+    <script type="text/javascript">
+        var sentence = "<p>My name is {{name}} and I live in {{city}}</p>";
+        var template = Handlebars.compile(sentence);
+        var data = template({name: "Geoffrey", city: "Hollister"});
 
-            
-        })
+        document.getElementById("randoData").innerHTML += data;
     </script>
 
 </html>

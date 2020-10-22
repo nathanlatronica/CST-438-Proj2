@@ -2,6 +2,7 @@ const express = require("express");
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
+const Handlebars = require("handlebars");
 const app = express();
 const port = process.env.PORT || 8000;
 
