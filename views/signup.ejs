@@ -1,16 +1,45 @@
 <!DOCTYPE html>
 <html>
     <%- include('partials/header') %>
+
     <body>
-        <div class="topnav">
-            <a href="/">Home</a>
-            <a href="/login">Login</a>
-          </div>
+        <%- include('partials/navbar') %>
+        
         <h1>Sign Up</h1>
         <hr>
-        <input id="username" type="text" placeholder="Username"><br>
-        <input id="password" type="password" placeholder="Password"><br>
-        <input id="confirmPassword" type="password" placeholder="Confirm Password"><br>
-        <button id="signupBtn">Sign Up!</button>
+        <form action="/signupProcess" method="POST">
+            <input id="usernameSignup" type="text" name="username" placeholder="USERNAME"><br>    
+            <input id="passwordSignup" type="password" name="password" placeholder="PASSWORD"><br>    
+            <input id="confirmPassword" type="password" name="confirmPass" placeholder="CONFIRM PASSWORD"><br>
+            <button id="signupBtn">Sign Up</button><br>
+        
+        </form>
+
+        <script>
+            $("#signupBtn").on("click", function(){
+                // alert("works");
+                $.ajax({
+                      method: "post",
+                         url: "/signupProcess",
+                    dataType: "json",
+                        data: { "username":$("#username").val(),
+                                "password":$("#password").val() },
+                     success: function(result,status) {
+                        alert(result);
+                        if (result.alreadyExists) {
+                            alert("Account Already Exists.");
+                            
+                        } else {
+                            location.href = "/"
+                            
+                        }
+                    }
+                    
+                });//ajax
+                
+            });//click
+        
+        </script>
     </body>
+    
 </html>

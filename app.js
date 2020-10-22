@@ -3,11 +3,13 @@ const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
 const app = express();
+const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
 app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
+app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true})); //use to parse data sent using the POST method
 
 
@@ -37,19 +39,24 @@ app.get("/signup", function(req, res){
 });
 
 app.post("/signupProcess", async function(req, res){
-  let rows = await insertUser(req.body);
-  let message = "Account already exists.";
-  let alreadyExists = true;
+  let users = await getUsers();
+  var isUser =  false;
+  var isAdmin = false;
 
-  if (rows.affectedRows > 0) {
-    alreadyExists = false;
+  for (let i = 0; i < users.length; i++){
+    if (req.body.username == users[i].username){
+      isUser = true;
+      break;
+    }
+    
   }
-  if (alreadyExists){
-    res.render("signup", {"message":message})
+  if (isUser){
+    res.send(true)
   } else {
-    res.render("index");
+    let rows = await insertUser(req.body)
   }
   
+  dbTesting()
 })
 
 
@@ -58,24 +65,49 @@ function insertUser(body){
 
   return new Promise(function(resolve, reject){
     connection.connect(function(err) {
-       if (err) throw err;
-       console.log("Connected!");
+      if (err) throw err;
+      console.log("Connected!");
     
-       let sql = `INSERT INTO users
+      let sql = `INSERT INTO users
                     (username, password)
-                     VALUES (?,?)`;
-    
-       let params = [body.username, body.password];
-    
-       conn.query(sql, params, function (err, rows, fields) {
-          if (err) throw err;
-          //res.send(rows);
-          connection.end();
-          resolve(rows);
-       });
-    
+                    VALUES (?,?)`;
+  
+      let params = [body.username, body.password];
+
+      connection.query(sql, params, function (err, rows, fields) {
+        if (err) throw err;
+        //res.send(rows);
+        resolve(rows);
+        connection.end();
+        
+      });
+          
     });//connect
   });//promise 
+}
+
+
+function getUsers(){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+          let sql = `SELECT * 
+                    FROM users`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
 }
 
 function dbConnection(){
@@ -94,13 +126,13 @@ function dbSetup() {
   let connection = dbConnection();
 
   connection.connect()
-  //delete tables if they already exists
-  // var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
-  // connection.query(dropUsers, function (err, rows, fields) {
-  //   if (err) {
-  //     throw err
-  //   }
-  // })
+  // delete tables if they already exists
+  var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
+  connection.query(dropUsers, function (err, rows, fields) {
+    if (err) {
+      throw err
+    }
+  })
 
   var createUsers = 'CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50), password VARCHAR(50), PRIMARY KEY (id));'
   connection.query(createUsers, function (err, rows, fields) {
@@ -111,7 +143,7 @@ function dbSetup() {
   })
 
   //code to create the movies table
-  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating INT, director VARCHAR(255), summary VARCHAR(500), PRIMARY KEY (id));'
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating INT, director VARCHAR(255), summary VARCHAR(500), num_tickets INT, PRIMARY KEY (id));'
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err
@@ -137,7 +169,7 @@ function dbSetup() {
 
   })
 
-//uncomment code below for insert testing, must drop rows or table afterwards
+//uncomment code below for testing
 
   // var sql = "INSERT INTO users (username, password) VALUES ('Bob', '1234')";
   // connection.query(sql, function (err, rows, fields) {
@@ -153,6 +185,23 @@ function dbSetup() {
 }
 
 dbSetup()
+
+function dbTesting(){
+  let conn = dbConnection();
+    
+  conn.connect(function(err) {
+     if (err) throw err;
+  
+     let sql = "SELECT * FROM users";
+  
+     conn.query(sql, function (err, rows, fields) {
+        if (err) throw err;
+        conn.end();
+        console.log(rows);
+     });
+  
+  });
+}
 
 //starting server
 app.listen(port, () => {
