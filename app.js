@@ -30,7 +30,7 @@ app.get("/profile", function(req, res){
 });
 
 app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay");
+  res.render("itemDisplay1");
 });
 
 app.get("/login", function(req, res){

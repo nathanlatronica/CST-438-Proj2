@@ -1,0 +1,15 @@
+<body>
+    <h1>Movie List</h1>
+    <nav>
+
+        <div id="randoData"></div>
+
+    </nav>
+    <script type="text/javascript">
+        var sentence = "<p>My name is {{name}} and I live in {{city}}</p>";
+        var template = Handlebars.compile(sentence);
+        var data = template({ name: "Geoffrey", city: "Hollister" });
+
+        document.getElementById("randoData").innerHTML += data;
+    </script>
+</body>
