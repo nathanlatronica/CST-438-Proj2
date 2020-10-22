@@ -33,8 +33,8 @@ app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay1");
+app.get("/itemDisplay", function(req, res, next){
+  res.render('itemDisplay1', {layout: 'startPage', template: 'home-template'});
 });
 
 app.get("/login", function(req, res){
