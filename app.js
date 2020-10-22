@@ -3,10 +3,14 @@ const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
 const Handlebars = require("handlebars");
+var exphbs  = require('express-handlebars');
 const app = express();
+
+app.engine('handlebars', exphbs({defaultLayout:'main', layoutsDir: __dirname + '/views/layouts', partialsDir: __dirname + '/views/partials'}))
+
 const port = process.env.PORT || 8000;
 
-app.set("view engine", "ejs");
+app.set("view engine", "handlebars");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(express.urlencoded()); //use to parse data sent using the POST method
@@ -14,7 +18,7 @@ app.use(express.urlencoded()); //use to parse data sent using the POST method
 
 //routes
 app.get("/", function(req, res){
-  res.render("index");
+  res.render("home1");
 });
 
 app.get("/cart", function(req, res){

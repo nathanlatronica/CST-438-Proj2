@@ -15,24 +15,6 @@
 
             <div id="randoData"></div>
 
-            <!-- <ul id="app">
-
-                <li v-for="movie in movies">
-                    {{ movie }}
-                </li> -->
-
-                <!-- <li>{{product}}</li>
-                <li>Movie 2</li>
-                <li>Movie 3</li>
-                <li>Movie 4</li>
-                <li>Movie 5</li>
-                <li>Movie 6</li> 
-                <li>Movie 7</li> 
-                <li>Movie 8</li>
-                <li>Movie 9</li>
-                <li>Movie 10</li> -->
-
-            <!-- </ul> -->
         </nav>
         <script type="text/javascript">
             var sentence = "<p>My name is {{name}} and I live in {{city}}</p>";
@@ -42,13 +24,5 @@
             document.getElementById("randoData").innerHTML += data;
         </script>
     </body>
-
-    <script type="text/javascript">
-        var sentence = "<p>My name is {{name}} and I live in {{city}}</p>";
-        var template = Handlebars.compile(sentence);
-        var data = template({name: "Geoffrey", city: "Hollister"});
-
-        document.getElementById("randoData").innerHTML += data;
-    </script>
 
 </html>
