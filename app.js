@@ -8,7 +8,7 @@ const port = process.env.PORT || 8000;
 app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
-app.use(express.urlencoded()); //use to parse data sent using the POST method
+app.use(express.urlencoded({ extended: true})); //use to parse data sent using the POST method
 
 
 //routes
@@ -36,31 +36,76 @@ app.get("/signup", function(req, res){
    res.render("signup");
 });
 
+app.post("/signupProcess", async function(req, res){
+  let rows = await insertUser(req.body);
+  let message = "Account already exists.";
+  let alreadyExists = true;
 
-var connection = mysql.createConnection({
-  host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-  user: 'kd892qz9jpxwqtxq',
-  password: 'kjjtymmpwpomk5ie',
-  database: 'yjwepa0cf8l7lsku'
+  if (rows.affectedRows > 0) {
+    alreadyExists = false;
+  }
+  if (alreadyExists){
+    res.render("signup", {"message":message})
+  } else {
+    res.render("index");
+  }
+  
 })
 
 
+function insertUser(body){
+  let connection = dbConnection()
+
+  return new Promise(function(resolve, reject){
+    connection.connect(function(err) {
+       if (err) throw err;
+       console.log("Connected!");
+    
+       let sql = `INSERT INTO users
+                    (username, password)
+                     VALUES (?,?)`;
+    
+       let params = [body.username, body.password];
+    
+       conn.query(sql, params, function (err, rows, fields) {
+          if (err) throw err;
+          //res.send(rows);
+          connection.end();
+          resolve(rows);
+       });
+    
+    });//connect
+  });//promise 
+}
+
+function dbConnection(){
+  let connection = mysql.createConnection({
+    host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: 'kd892qz9jpxwqtxq',
+    password: 'kjjtymmpwpomk5ie',
+    database: 'yjwepa0cf8l7lsku'
+  })
+
+  return connection
+}
+
+
 function dbSetup() {
+  let connection = dbConnection();
+
   connection.connect()
   //delete tables if they already exists
-  var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
-  connection.query(dropUsers, function (err, rows, fields) {
-    if (err) {
-      throw err
-    }
-  })
+  // var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
+  // connection.query(dropUsers, function (err, rows, fields) {
+  //   if (err) {
+  //     throw err
+  //   }
+  // })
 
   var createUsers = 'CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50), password VARCHAR(50), PRIMARY KEY (id));'
   connection.query(createUsers, function (err, rows, fields) {
     if (err) {
       throw err
-    } else {
-      console.log("users table created")
     }
 
   })
@@ -70,9 +115,7 @@ function dbSetup() {
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err
-    } else {
-      console.log("movies table created")
-    }
+    } 
 
   })
 
@@ -81,8 +124,6 @@ function dbSetup() {
   connection.query(createCart, function (err, rows, fields) {
     if (err) {
       throw err
-    } else {
-      console.log("cart table created")
     }
 
   })
@@ -92,8 +133,6 @@ function dbSetup() {
   connection.query(createCartItem, function (err, rows, fields) {
     if (err) {
       throw err
-    } else {
-      console.log("cart item table created")
     }
 
   })
