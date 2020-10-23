@@ -15,18 +15,18 @@ app.use(express.urlencoded({ extended: true})); //use to parse data sent using t
 
 //routes
 app.get("/", async function(req, res){
-  let movieList = await getMovies();
+  let movieList = await get3Movies();
 
-  console.log(movieList);
+  //console.log(movieList);
   
   res.render("index", {"movieList":movieList});
 });
 
 
 app.get("/loggedIn", async function(req, res){
-  let movieList = await getMovies();
+  let movieList = await get3Movies();
 
-  console.log(movieList);
+  //console.log(movieList);
   
   res.render("loggedIn", {"movieList":movieList});
 });
@@ -130,7 +130,7 @@ function getUsers(){
 }
 
 
-function getMovies(){
+function get3Movies(){
   let connection = dbConnection();
     
   return new Promise(function(resolve, reject){
@@ -139,7 +139,8 @@ function getMovies(){
           console.log("Connected!");
       
           let sql = `SELECT * 
-                    FROM movies`;
+                    FROM movies
+                    ORDER BY RAND() LIMIT 3`;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
