@@ -1,5 +1,4 @@
 const express = require("express");
-var exphbs  = require('express-handlebars');
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
@@ -7,10 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
-app.engine('handlebars', exphbs());
-
-// app.set("view engine", "ejs");
-app.set('view engine', 'handlebars');
+app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -23,9 +19,7 @@ app.get("/", async function(req, res){
 
   //console.log(movieList);
   
-  //Starting Screen
-  // res.render("index", {"movieList":movieList});
-  res.render("home1", {"movieList":movieList, layout: 'main'});
+  res.render("index", {"movieList":movieList});
 });
 
 
@@ -33,13 +27,13 @@ app.get("/loggedIn", async function(req, res){
   let movieList = await get3Movies();
 
   //console.log(movieList);
-  res.render("loggedIn", {"movieList":movieList, layout: 'startPage'});
-  // res.render("loggedIn", {"movieList":movieList});
+  
+  res.render("loggedIn", {"movieList":movieList});
 });
 
 app.get("/cart",  async function(req, res){
-  var username = "Bob"
-  var password = "Bob"
+  var username = "Joe"
+  var password = "567"
 
   let usersMovies = await getUsersMovies(username, password);
 
@@ -61,17 +55,15 @@ app.get("/profile", function(req, res){
 });
 
 app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay1", {layout: 'startPage'});
+  res.render("itemDisplay");
 });
 
-//log In 
 app.get("/login", function(req, res){
-  res.render("login1", {layout: 'signInCSS'});
-  //  res.render("login");
+   res.render("login");
 });
 
 app.get("/signup", function(req, res){
-   res.render("signup1", {layout: 'signInCSS'});
+   res.render("signup");
 });
 
 app.post("/signupProcess", async function(req, res){
@@ -177,30 +169,6 @@ function get3Movies(){
   });//promise
 }
 
-function getMovies(){
-  let connection = dbConnection();
-    
-  return new Promise(function(resolve, reject){
-      connection.connect(function(err) {
-          if (err) throw err;
-          console.log("Connected!");
-      
-          let sql = `SELECT * 
-                    FROM movies
-                    ORDER BY RAND()`;
-          // console.log(sql);        
-          connection.query(sql, function (err, rows, fields) {
-            if (err) throw err;
-
-            connection.end();
-          //   console.log(rows);
-            resolve(rows);
-          });
-      
-      });//connect
-  });//promise
-}
-
 function getUsersMovies(username, password){
   let connection = dbConnection();
     
@@ -213,8 +181,9 @@ function getUsersMovies(username, password){
         */
         
           let sql = `SELECT *
-                    FROM cartItem
-                    INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+                    FROM cartItem JOIN cart
+                    WHERE cartItem.cart_id = cart.user_id
+                    `;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
@@ -227,7 +196,6 @@ function getUsersMovies(username, password){
       });//connect
   });//promise
 }
-
 
 function dbConnection(){
   let connection = mysql.createConnection({
@@ -262,7 +230,7 @@ function dbSetup() {
   })
 
   //code to create the movies table
-  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), PRIMARY KEY (id));'
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), num_tickets INT, PRIMARY KEY (id));'
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err
