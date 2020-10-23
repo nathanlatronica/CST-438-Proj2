@@ -47,6 +47,7 @@ app.post("/signupProcess", async function(req, res){
   var isUser =  false;
   var isAdmin = false;
 
+  console.log("username", req.body.username)
   for (let i = 0; i < users.length; i++){
     if (req.body.username == users[i].username){
       isUser = true;
@@ -54,13 +55,17 @@ app.post("/signupProcess", async function(req, res){
     }
     
   }
+  console.log("check isUser")
   if (isUser){
-    res.send(true)
+    console.log("isUser true")
+    res.json({"alreadyExists":true})
   } else {
+    console.log("isUser false")
     let rows = await insertUser(req.body)
+    res.json({"alreadyExists":false})
   }
   
-  dbTesting()
+  // dbTesting()
 })
 
 
@@ -131,12 +136,12 @@ function dbSetup() {
 
   connection.connect()
   // delete tables if they already exists
-  var dropUsers = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
-  connection.query(dropUsers, function (err, rows, fields) {
-    if (err) {
-      throw err
-    }
-  })
+  // var dropTables = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
+  // connection.query(dropTables, function (err, rows, fields) {
+  //   if (err) {
+  //     throw err
+  //   }
+  // })
 
   var createUsers = 'CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50), password VARCHAR(50), PRIMARY KEY (id));'
   connection.query(createUsers, function (err, rows, fields) {
@@ -173,24 +178,29 @@ function dbSetup() {
 
   })
 
-//uncomment code below for testing
-
-  // var sql = "INSERT INTO users (username, password) VALUES ('Bob', '1234')";
-  // connection.query(sql, function (err, rows, fields) {
-  //   if (err) throw err;
-  //   console.log("1 record inserted");
-  // });
-  // connection.query("SELECT * FROM users", function (err, result, fields) {
-  //   if (err) throw err;
-  //   console.log(result[0]);
-  // });
-
   connection.end()
 }
 
 dbSetup()
 
 function dbTesting(){
+  let conn = dbConnection();
+    
+  conn.connect(function(err) {
+     if (err) throw err;
+  
+     let sql = "SELECT * FROM users";
+  
+     conn.query(sql, function (err, rows, fields) {
+        if (err) throw err;
+        conn.end();
+        console.log(rows);
+     });
+  
+  });
+}
+
+function dbDel(){
   let conn = dbConnection();
     
   conn.connect(function(err) {
