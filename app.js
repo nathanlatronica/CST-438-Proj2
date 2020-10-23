@@ -38,8 +38,13 @@ app.get("/loggedIn", async function(req, res){
 });
 
 app.get("/cart",  async function(req, res){
+<<<<<<< HEAD
+  var username = "Joe"
+  var password = "567"
+=======
   var username = "Bob"
   var password = "Bob"
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 
   let usersMovies = await getUsersMovies(username, password);
 
@@ -53,8 +58,12 @@ app.get("/cart",  async function(req, res){
    At this point user is already signed in so you know they exist just have to show their movie picks
 */
 
+<<<<<<< HEAD
+  res.render("cart");
+=======
   // res.render("cart");
   res.render("cart1", {layout: 'cartLayout'});
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 });
 
 app.get("/profile", function(req, res){
@@ -179,6 +188,8 @@ function get3Movies(){
   });//promise
 }
 
+<<<<<<< HEAD
+=======
 function getMovies(){
   let connection = dbConnection();
     
@@ -203,6 +214,7 @@ function getMovies(){
   });//promise
 }
 
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 function getUsersMovies(username, password){
   let connection = dbConnection();
     
@@ -215,8 +227,14 @@ function getUsersMovies(username, password){
         */
         
           let sql = `SELECT *
+<<<<<<< HEAD
+                    FROM cartItem JOIN cart
+                    WHERE cartItem.cart_id = cart.user_id AND username = cart.username
+                    `;
+=======
                     FROM cartItem
                     INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
@@ -230,7 +248,10 @@ function getUsersMovies(username, password){
   });//promise
 }
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 function dbConnection(){
   let connection = mysql.createConnection({
     host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
