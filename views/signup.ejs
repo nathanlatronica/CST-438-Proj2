@@ -28,15 +28,16 @@
                       method: "post",
                          url: "/signupProcess",
                     dataType: "json",
-                        data: { "username":$("#username").val(),
-                                "password":$("#password").val() },
+                        data: { "username":$("#usernameSignup").val(),
+                                "password":$("#passwordSignup").val() },
                      success: function(result,status) {
                         alert(result);
                         if (result.alreadyExists) {
                             alert("Account Already Exists.");
-                            
+                            console.log("Account already exists")
+                            location.href = "/login"
                         } else {
-                            location.href = "/"
+                            location.href = "/index"
                             
                         }
                     }

@@ -43,30 +43,67 @@ app.get("/signup", function(req, res){
 });
 
 app.post("/signupProcess", async function(req, res){
-  let users = await getUsers();
-  var isUser =  false;
-  var isAdmin = false;
+  // let users = await getUsers();
+  // var isUser =  false;
+  // var isAdmin = false;
 
-  console.log("username", req.body.username)
-  for (let i = 0; i < users.length; i++){
-    if (req.body.username == users[i].username){
-      isUser = true;
-      break;
-    }
+  // console.log("username", req.body.username)
+  // for (let i = 0; i < users.length; i++){
+  //   if (req.body.username == users[i].username){
+  //     isUser = true;
+  //     break;
+  //   }
     
-  }
-  console.log("check isUser")
-  if (isUser){
-    console.log("isUser true")
-    res.json({"alreadyExists":true})
-  } else {
-    console.log("isUser false")
-    let rows = await insertUser(req.body)
-    res.json({"alreadyExists":false})
-  }
-  
+  // }
+  // // console.log("check isUser")
+  // if (isUser){
+  //   console.log("isUser true")
+  //   res.json({"alreadyExists":true})
+  // } else {
+  //   console.log("isUser false")
+  //   let rows = await insertUser(req.body)
+  //   res.render("loggedIn")
+  // }
+  let rows = await insertUser(req.body)
+  // res.send({"alreadyExists":true})
   // dbTesting()
 })
+
+app.post("/loginProcess", async function(req, res) {
+    
+  let users = await getUsers();
+  var isUser = false;
+  var passCorrect = false;
+  // var checkAdmin = false;
+
+
+  for (var i = 0; i < users.length; i++){
+
+    if (req.body.username == users[i].username){
+        isUser = true;
+    }
+    if (isUser){
+      if (req.body.password == users[i].password){
+        passCorrect = true;
+        if (users[i].isAdmin == 1){
+            checkAdmin = true;
+        }
+        break;
+          
+      }
+    }
+  }
+  // console.log(checkAdmin);
+
+  if (isUser && passCorrect) {
+      // req.session.authenticated = true;
+      res.send({"loginSuccess":true, "isAdmin":checkAdmin});
+     
+  } else {
+     res.send(false);
+  }
+
+});
 
 
 function insertUser(body){
@@ -75,7 +112,7 @@ function insertUser(body){
   return new Promise(function(resolve, reject){
     connection.connect(function(err) {
       if (err) throw err;
-      console.log("Connected!");
+      console.log("insert");
     
       let sql = `INSERT INTO users
                     (username, password)
@@ -86,9 +123,8 @@ function insertUser(body){
       connection.query(sql, params, function (err, rows, fields) {
         if (err) throw err;
         //res.send(rows);
-        resolve(rows);
         connection.end();
-        
+        resolve(rows);
       });
           
     });//connect
@@ -102,7 +138,7 @@ function getUsers(){
   return new Promise(function(resolve, reject){
       connection.connect(function(err) {
           if (err) throw err;
-          console.log("Connected!");
+          console.log("get users");
       
           let sql = `SELECT * 
                     FROM users`;
@@ -152,12 +188,11 @@ function dbSetup() {
   })
 
   //code to create the movies table
-  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating INT, director VARCHAR(255), summary VARCHAR(500), num_tickets INT, PRIMARY KEY (id));'
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), num_tickets INT, PRIMARY KEY (id));'
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err
     } 
-
   })
 
   //create shopping cart table
