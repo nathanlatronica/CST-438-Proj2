@@ -53,15 +53,17 @@ app.get("/cart",  async function(req, res){
    At this point user is already signed in so you know they exist just have to show their movie picks
 */
 
-  res.render("cart");
+  // res.render("cart");
+  res.render("cart1", {layout: 'cartLayout'});
 });
 
 app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay1", {layout: 'startPage'});
+app.get("/itemDisplay", async function(req, res){
+  let movieList = await getMovies();
+  res.render("itemDisplay1", {"movieList": movieList, layout: 'startPage'});
 });
 
 //log In 
@@ -262,7 +264,7 @@ function dbSetup() {
   })
 
   //code to create the movies table
-  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), PRIMARY KEY (id));'
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), num_tickets INT, PRIMARY KEY (id));'
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err

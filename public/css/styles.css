@@ -2,9 +2,6 @@
 	margin: auto;
 }
 
-body{
-    background-color: aqua;
-}
 
 header {
 	text-align: left;
@@ -32,7 +29,4 @@ li {
 }
 .midlaner {
 	background-color: #eeeeee;
-}
-.toplaner {
-	background-color: #ffea00;
 }
