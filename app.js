@@ -21,9 +21,6 @@ app.get("/", async function(req, res){
   
   res.render("index", {"movieList":movieList});
 });
-app.get("/loggedIn", function(req, res){
-  res.render("loggedIn");
-});
 
 
 app.get("/loggedIn", async function(req, res){
@@ -34,7 +31,22 @@ app.get("/loggedIn", async function(req, res){
   res.render("loggedIn", {"movieList":movieList});
 });
 
-app.get("/cart", function(req, res){
+app.get("/cart",  async function(req, res){
+  var username = "Bob"
+  var password = "Bob"
+
+  let usersMovies = await getUsersMovies(username, password);
+
+  console.log(usersMovies);
+
+
+/* find user in db
+   Get all their wanted movies
+   show all the movies they want
+   allow user to select how many tickets they want
+   At this point user is already signed in so you know they exist just have to show their movie picks
+*/
+
   res.render("cart");
 });
 
@@ -157,6 +169,33 @@ function get3Movies(){
   });//promise
 }
 
+function getUsersMovies(username, password){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+        /* want to select all rows in which the cart_id in cart items matches the user id in cart
+        */
+        
+          let sql = `SELECT *
+                    FROM cartItem
+                    INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
 function dbConnection(){
   let connection = mysql.createConnection({
     host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
@@ -177,7 +216,7 @@ function dbSetup() {
   // var dropTables = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
   // connection.query(dropTables, function (err, rows, fields) {
   //   if (err) {
-  //     throw err
+  //     throw err p
   //   }
   // })
 
@@ -190,7 +229,7 @@ function dbSetup() {
   })
 
   //code to create the movies table
-  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating INT, director VARCHAR(255), summary VARCHAR(500), num_tickets INT, PRIMARY KEY (id));'
+  var createMovies = 'CREATE TABLE IF NOT EXISTS movies (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), genre VARCHAR(255), rating FLOAT, director VARCHAR(255), summary VARCHAR(500), imgURL VARCHAR(255), PRIMARY KEY (id));'
   connection.query(createMovies, function (err, rows, fields) {
     if (err) {
       throw err
