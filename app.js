@@ -42,7 +42,12 @@ app.get("/signup", function(req, res){
    res.render("signup");
 });
 
-app.post("/signupProcess", async function(req, res){
+app.post("/signup", async function(req, res){
+  //on sign up just insert. if ajax worked, move next 3 lines to the end of function
+  let rows = await insertUser(req.body)
+  // res.send({"alreadyExists":true})
+  res.render("index")
+
   // let users = await getUsers();
   // var isUser =  false;
   // var isAdmin = false;
@@ -64,8 +69,7 @@ app.post("/signupProcess", async function(req, res){
   //   let rows = await insertUser(req.body)
   //   res.render("loggedIn")
   // }
-  let rows = await insertUser(req.body)
-  // res.send({"alreadyExists":true})
+  
   // dbTesting()
 })
 
@@ -97,7 +101,7 @@ app.post("/loginProcess", async function(req, res) {
 
   if (isUser && passCorrect) {
       // req.session.authenticated = true;
-      res.send({"loginSuccess":true, "isAdmin":checkAdmin});
+      res.render("loggedIn");
      
   } else {
      res.send(false);
