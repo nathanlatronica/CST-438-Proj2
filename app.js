@@ -169,6 +169,30 @@ function get3Movies(){
   });//promise
 }
 
+function getMovies(){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+          let sql = `SELECT * 
+                    FROM movies
+                    ORDER BY RAND()`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
 function getUsersMovies(username, password){
   let connection = dbConnection();
     
@@ -195,6 +219,7 @@ function getUsersMovies(username, password){
       });//connect
   });//promise
 }
+
 
 function dbConnection(){
   let connection = mysql.createConnection({
