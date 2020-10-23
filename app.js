@@ -2,19 +2,11 @@ const express = require("express");
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
-const Handlebars = require("handlebars");
-var exphbs  = require('express-handlebars');
 const app = express();
-
 const bodyParser = require("body-parser");
-
-
-app.engine('handlebars', exphbs({defaultLayout:'main', layoutsDir: __dirname + '/views/layouts', partialsDir: __dirname + '/views/partials'}))
-
-
 const port = process.env.PORT || 8000;
 
-app.set("view engine", "handlebars");
+app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -22,17 +14,13 @@ app.use(express.urlencoded({ extended: true})); //use to parse data sent using t
 
 
 //routes
-
 app.get("/", async function(req, res){
   let movieList = await get3Movies();
 
   //console.log(movieList);
   
   res.render("index", {"movieList":movieList});
-
-// app.get("/", function(req, res){
-//   res.render("home1");
-// });
+});
 
 
 app.get("/loggedIn", async function(req, res){
@@ -66,8 +54,8 @@ app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res, next){
-  res.render('itemDisplay1', {layout: 'startPage', template: 'home-template'});
+app.get("/itemDisplay", function(req, res){
+  res.render("itemDisplay");
 });
 
 app.get("/login", function(req, res){
