@@ -1,4 +1,5 @@
 const express = require("express");
+var exphbs  = require('express-handlebars');
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
@@ -6,7 +7,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
-app.set("view engine", "ejs");
+app.engine('handlebars', exphbs());
+
+// app.set("view engine", "ejs");
+app.set('view engine', 'handlebars');
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -19,7 +23,9 @@ app.get("/", async function(req, res){
 
   //console.log(movieList);
   
-  res.render("index", {"movieList":movieList});
+  //Starting Screen
+  // res.render("index", {"movieList":movieList});
+  res.render("home1", {"movieList":movieList, layout: 'main'});
 });
 
 
@@ -27,13 +33,18 @@ app.get("/loggedIn", async function(req, res){
   let movieList = await get3Movies();
 
   //console.log(movieList);
-  
-  res.render("loggedIn", {"movieList":movieList});
+  res.render("loggedIn", {"movieList":movieList, layout: 'startPage'});
+  // res.render("loggedIn", {"movieList":movieList});
 });
 
 app.get("/cart",  async function(req, res){
+<<<<<<< HEAD
   var username = "Joe"
   var password = "567"
+=======
+  var username = "Bob"
+  var password = "Bob"
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 
   let usersMovies = await getUsersMovies(username, password);
 
@@ -47,23 +58,31 @@ app.get("/cart",  async function(req, res){
    At this point user is already signed in so you know they exist just have to show their movie picks
 */
 
+<<<<<<< HEAD
   res.render("cart");
+=======
+  // res.render("cart");
+  res.render("cart1", {layout: 'cartLayout'});
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 });
 
 app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay");
+app.get("/itemDisplay", async function(req, res){
+  let movieList = await getMovies();
+  res.render("itemDisplay1", {"movieList": movieList, layout: 'startPage'});
 });
 
+//log In 
 app.get("/login", function(req, res){
-   res.render("login");
+  res.render("login1", {layout: 'signInCSS'});
+  //  res.render("login");
 });
 
 app.get("/signup", function(req, res){
-   res.render("signup");
+   res.render("signup1", {layout: 'signInCSS'});
 });
 
 app.post("/signupProcess", async function(req, res){
@@ -169,7 +188,9 @@ function get3Movies(){
   });//promise
 }
 
-function getUsersMovies(username, password){
+<<<<<<< HEAD
+=======
+function getMovies(){
   let connection = dbConnection();
     
   return new Promise(function(resolve, reject){
@@ -177,13 +198,9 @@ function getUsersMovies(username, password){
           if (err) throw err;
           console.log("Connected!");
       
-        /* want to select all rows in which the cart_id in cart items matches the user id in cart
-        */
-        
-          let sql = `SELECT *
-                    FROM cartItem JOIN cart
-                    WHERE cartItem.cart_id = cart.user_id AND username = cart.username
-                    `;
+          let sql = `SELECT * 
+                    FROM movies
+                    ORDER BY RAND()`;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
@@ -197,6 +214,44 @@ function getUsersMovies(username, password){
   });//promise
 }
 
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
+function getUsersMovies(username, password){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+        /* want to select all rows in which the cart_id in cart items matches the user id in cart
+        */
+        
+          let sql = `SELECT *
+<<<<<<< HEAD
+                    FROM cartItem JOIN cart
+                    WHERE cartItem.cart_id = cart.user_id AND username = cart.username
+                    `;
+=======
+                    FROM cartItem
+                    INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 61b9e901a76f98f799f6780e427faf4a69fd1fac
 function dbConnection(){
   let connection = mysql.createConnection({
     host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
