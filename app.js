@@ -1,4 +1,5 @@
 const express = require("express");
+var exphbs  = require('express-handlebars');
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
@@ -6,7 +7,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
-app.set("view engine", "ejs");
+app.engine('handlebars', exphbs());
+
+// app.set("view engine", "ejs");
+app.set('view engine', 'handlebars');
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -19,7 +23,9 @@ app.get("/", async function(req, res){
 
   //console.log(movieList);
   
-  res.render("index", {"movieList":movieList});
+  //Starting Screen
+  // res.render("index", {"movieList":movieList});
+  res.render("home1", {"movieList":movieList, layout: 'main'});
 });
 
 
@@ -27,8 +33,8 @@ app.get("/loggedIn", async function(req, res){
   let movieList = await get3Movies();
 
   //console.log(movieList);
-  
-  res.render("loggedIn", {"movieList":movieList});
+  res.render("loggedIn", {"movieList":movieList, layout: 'startPage'});
+  // res.render("loggedIn", {"movieList":movieList});
 });
 
 app.get("/cart",  async function(req, res){
@@ -55,15 +61,17 @@ app.get("/profile", function(req, res){
 });
 
 app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay");
+  res.render("itemDisplay1", {layout: 'startPage'});
 });
 
+//log In 
 app.get("/login", function(req, res){
-   res.render("login");
+  res.render("login1", {layout: 'signInCSS'});
+  //  res.render("login");
 });
 
 app.get("/signup", function(req, res){
-   res.render("signup");
+   res.render("signup1", {layout: 'signInCSS'});
 });
 
 app.post("/signupProcess", async function(req, res){
