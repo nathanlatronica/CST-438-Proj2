@@ -54,8 +54,10 @@ app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay");
+app.get("/itemDisplay", async function(req, res){
+  let movieList = await getAllMovies();
+
+  res.render("itemDisplay", {"movieList":movieList});
 });
 
 app.get("/login", function(req, res){
@@ -156,6 +158,29 @@ function get3Movies(){
           let sql = `SELECT * 
                     FROM movies
                     ORDER BY RAND() LIMIT 3`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
+function getAllMovies(){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+          let sql = `SELECT * 
+                    FROM movies`;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
