@@ -1,4 +1,5 @@
 const express = require("express");
+var exphbs  = require('express-handlebars');
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
@@ -6,7 +7,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
-app.set("view engine", "ejs");
+app.engine('handlebars', exphbs());
+
+// app.set("view engine", "ejs");
+app.set('view engine', 'handlebars');
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -14,58 +18,87 @@ app.use(express.urlencoded({ extended: true})); //use to parse data sent using t
 
 
 //routes
-app.get("/", function(req, res){
-  res.render("index");
+app.get("/", async function(req, res){
+  let movieList = await get3Movies();
+
+  //console.log(movieList);
+  
+  //Starting Screen
+  // res.render("index", {"movieList":movieList});
+  res.render("home1", {"movieList":movieList, layout: 'main'});
 });
 
-app.get("/loggedIn", function(req, res){
-  res.render("loggedIn");
+
+app.get("/loggedIn", async function(req, res){
+  let movieList = await get3Movies();
+
+  //console.log(movieList);
+  res.render("loggedIn", {"movieList":movieList, layout: 'startPage'});
+  // res.render("loggedIn", {"movieList":movieList});
 });
 
-app.get("/cart", function(req, res){
-  res.render("cart");
+app.get("/cart",  async function(req, res){
+  var username = "Bob"
+  var password = "Bob"
+
+  let usersMovies = await getUsersMovies(username, password);
+
+  console.log(usersMovies);
+
+
+/* find user in db
+   Get all their wanted movies
+   show all the movies they want
+   allow user to select how many tickets they want
+   At this point user is already signed in so you know they exist just have to show their movie picks
+*/
+
+  // res.render("cart");
+  res.render("cart1", {layout: 'cartLayout'});
 });
 
 app.get("/profile", function(req, res){
   res.render("profile");
 });
 
-app.get("/itemDisplay", function(req, res){
-  res.render("itemDisplay");
+app.get("/itemDisplay", async function(req, res){
+  let movieList = await getMovies();
+  res.render("itemDisplay1", {"movieList": movieList, layout: 'startPage'});
 });
 
+//log In 
 app.get("/login", function(req, res){
-   res.render("login");
+  res.render("login1", {layout: 'signInCSS'});
+  //  res.render("login");
 });
 
 app.get("/signup", function(req, res){
-   res.render("signup");
+   res.render("signup1", {layout: 'signInCSS'});
 });
 
 app.post("/signupProcess", async function(req, res){
-  // let users = await getUsers();
-  // var isUser =  false;
-  // var isAdmin = false;
+  let users = await getUsers();
+  var isUser =  false;
+  var isAdmin = false;
 
-  // console.log("username", req.body.username)
-  // for (let i = 0; i < users.length; i++){
-  //   if (req.body.username == users[i].username){
-  //     isUser = true;
-  //     break;
-  //   }
+  console.log("username", req.body.username)
+  for (let i = 0; i < users.length; i++){
+    if (req.body.username == users[i].username){
+      isUser = true;
+      break;
+    }
     
-  // }
-  // // console.log("check isUser")
-  // if (isUser){
-  //   console.log("isUser true")
-  //   res.json({"alreadyExists":true})
-  // } else {
-  //   console.log("isUser false")
-  //   let rows = await insertUser(req.body)
-  //   res.render("loggedIn")
-  // }
-  let rows = await insertUser(req.body)
-  // res.send({"alreadyExists":true})
+  }
+  console.log("check isUser")
+  if (isUser){
+    console.log("isUser true")
+    res.json({"alreadyExists":true})
+  } else {
+    console.log("isUser false")
+    //let rows = await insertUser(req.body)
+    res.json({"alreadyExists":false})
+  }
+  
   // dbTesting()
 })
 
@@ -155,6 +188,82 @@ function getUsers(){
   });//promise
 }
 
+
+function get3Movies(){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+          let sql = `SELECT * 
+                    FROM movies
+                    ORDER BY RAND() LIMIT 3`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
+function getMovies(){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+          let sql = `SELECT * 
+                    FROM movies
+                    ORDER BY RAND()`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
+function getUsersMovies(username, password){
+  let connection = dbConnection();
+    
+  return new Promise(function(resolve, reject){
+      connection.connect(function(err) {
+          if (err) throw err;
+          console.log("Connected!");
+      
+        /* want to select all rows in which the cart_id in cart items matches the user id in cart
+        */
+        
+          let sql = `SELECT *
+                    FROM cartItem
+                    INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+          // console.log(sql);        
+          connection.query(sql, function (err, rows, fields) {
+            if (err) throw err;
+
+            connection.end();
+          //   console.log(rows);
+            resolve(rows);
+          });
+      
+      });//connect
+  });//promise
+}
+
 function dbConnection(){
   let connection = mysql.createConnection({
     host: 'durvbryvdw2sjcm5.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
@@ -165,6 +274,7 @@ function dbConnection(){
 
   return connection
 }
+
 
 
 function dbSetup() {

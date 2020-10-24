@@ -1,9 +1,32 @@
-.signup-content {
-    margin: auto !important;
+#username {
+	margin: auto;
 }
 
-header{
-    text-align: center;
-    padding: 60px;
-    font-size: 50px;
+
+header {
+	text-align: left;
+	padding: 10px;
+	font-size: 15px;
+}
+
+h1 {
+	padding: 25px;
+	text-align: center;
+	font-size: 75px;
+}
+
+.title {
+	font-size: 50px;
+	text-align: center;
+}
+
+li {
+	font-size: 25px;
+	width: 300px;
+	margin: 4px;
+	padding: 5px;
+	list-style: none;
+}
+.midlaner {
+	background-color: #eeeeee;
 }
