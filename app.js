@@ -1,5 +1,4 @@
 const express = require("express");
-var exphbs  = require('express-handlebars');
 const mysql   = require("mysql");
 // const sha256  = require("sha256");
 const session = require('express-session');
@@ -7,10 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8000;
 
-app.engine('handlebars', exphbs());
-
-// app.set("view engine", "ejs");
-app.set('view engine', 'handlebars');
+app.set("view engine", "ejs");
 app.use(express.static("public")); //folder for images, css, js
 app.use('/public', express.static('public'));
 app.use(bodyParser.json())
@@ -23,9 +19,7 @@ app.get("/", async function(req, res){
 
   //console.log(movieList);
   
-  //Starting Screen
-  // res.render("index", {"movieList":movieList});
-  res.render("home1", {"movieList":movieList, layout: 'main'});
+  res.render("index", {"movieList":movieList});
 });
 
 
@@ -33,13 +27,13 @@ app.get("/loggedIn", async function(req, res){
   let movieList = await get3Movies();
 
   //console.log(movieList);
-  res.render("loggedIn", {"movieList":movieList, layout: 'startPage'});
-  // res.render("loggedIn", {"movieList":movieList});
+  
+  res.render("loggedIn", {"movieList":movieList});
 });
 
 app.get("/cart",  async function(req, res){
-  var username = "Bob"
-  var password = "Bob"
+  var username = "Joe"
+  var password = "567"
 
   let usersMovies = await getUsersMovies(username, password);
 
@@ -53,8 +47,7 @@ app.get("/cart",  async function(req, res){
    At this point user is already signed in so you know they exist just have to show their movie picks
 */
 
-  // res.render("cart");
-  res.render("cart1", {layout: 'cartLayout'});
+  res.render("cart");
 });
 
 app.get("/profile", function(req, res){
@@ -62,18 +55,17 @@ app.get("/profile", function(req, res){
 });
 
 app.get("/itemDisplay", async function(req, res){
-  let movieList = await getMovies();
-  res.render("itemDisplay1", {"movieList": movieList, layout: 'startPage'});
+  let movieList = await getAllMovies();
+
+  res.render("itemDisplay", {"movieList":movieList});
 });
 
-//log In 
 app.get("/login", function(req, res){
-  res.render("login1", {layout: 'signInCSS'});
-  //  res.render("login");
+   res.render("login");
 });
 
 app.get("/signup", function(req, res){
-   res.render("signup1", {layout: 'signInCSS'});
+   res.render("signup");
 });
 
 app.post("/signupProcess", async function(req, res){
@@ -102,35 +94,36 @@ app.post("/signupProcess", async function(req, res){
   // dbTesting()
 })
 
-app.post("/loginProcess", async function(req, res) {
+app.post("/login", async function(req, res) {
     
   let users = await getUsers();
   var isUser = false;
   var passCorrect = false;
-  // var checkAdmin = false;
+  var checkAdmin = false;
 
 
   for (var i = 0; i < users.length; i++){
 
-    if (req.body.username == users[i].username){
-        isUser = true;
-    }
-    if (isUser){
-      if (req.body.password == users[i].password){
-        passCorrect = true;
-        if (users[i].isAdmin == 1){
-            checkAdmin = true;
-        }
-        break;
-          
+      if (req.body.username == users[i].username){
+          isUser = true;
       }
-    }
+      if (isUser){
+          if (req.body.password == users[i].pass){
+              passCorrect = true;
+              if (users[i].isAdmin == 1){
+                  checkAdmin = true;
+              }
+              break;
+              
+          }
+      }
   }
   // console.log(checkAdmin);
 
   if (isUser && passCorrect) {
-      // req.session.authenticated = true;
+      req.session.authenticated = true;
       res.send({"loginSuccess":true, "isAdmin":checkAdmin});
+     
      
   } else {
      res.send(false);
@@ -145,7 +138,7 @@ function insertUser(body){
   return new Promise(function(resolve, reject){
     connection.connect(function(err) {
       if (err) throw err;
-      console.log("insert");
+      console.log("Connected!");
     
       let sql = `INSERT INTO users
                     (username, password)
@@ -156,8 +149,9 @@ function insertUser(body){
       connection.query(sql, params, function (err, rows, fields) {
         if (err) throw err;
         //res.send(rows);
-        connection.end();
         resolve(rows);
+        connection.end();
+        
       });
           
     });//connect
@@ -171,7 +165,7 @@ function getUsers(){
   return new Promise(function(resolve, reject){
       connection.connect(function(err) {
           if (err) throw err;
-          console.log("get users");
+          console.log("Connected!");
       
           let sql = `SELECT * 
                     FROM users`;
@@ -213,7 +207,7 @@ function get3Movies(){
   });//promise
 }
 
-function getMovies(){
+function getAllMovies(){
   let connection = dbConnection();
     
   return new Promise(function(resolve, reject){
@@ -222,8 +216,7 @@ function getMovies(){
           console.log("Connected!");
       
           let sql = `SELECT * 
-                    FROM movies
-                    ORDER BY RAND()`;
+                    FROM movies`;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
@@ -249,8 +242,9 @@ function getUsersMovies(username, password){
         */
         
           let sql = `SELECT *
-                    FROM cartItem
-                    INNER JOIN productName ON cartItem.cart_id = cart.User_id`;
+                    FROM cartItem JOIN cart
+                    WHERE cartItem.cart_id = cart.user_id
+                    `;
           // console.log(sql);        
           connection.query(sql, function (err, rows, fields) {
             if (err) throw err;
@@ -276,7 +270,6 @@ function dbConnection(){
 }
 
 
-
 function dbSetup() {
   let connection = dbConnection();
 
@@ -285,7 +278,7 @@ function dbSetup() {
   // var dropTables = 'DROP TABLE IF EXISTS cartItem, cart, users, movies'
   // connection.query(dropTables, function (err, rows, fields) {
   //   if (err) {
-  //     throw err
+  //     throw err p
   //   }
   // })
 
@@ -303,6 +296,7 @@ function dbSetup() {
     if (err) {
       throw err
     } 
+
   })
 
   //create shopping cart table

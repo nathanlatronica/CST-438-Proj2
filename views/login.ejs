@@ -23,7 +23,7 @@
   </head>
 
   <body class="text-center">
-    <form action="/index" method="POST" class="form-signin">
+    <form action="/login" method="POST" class="form-signin">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <a href="/" class="btn btn-secondary my-2">Home</a>
 
@@ -35,4 +35,38 @@
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
   </body>
+  <script>
+    $("#loginBtn").on("click", function(){
+            
+        //alert("works!");
+        
+        $.ajax({
+        
+              method: "post",
+                 url: "/login",
+            dataType: "json",
+                data: { "username":$("#inputusername").val(),
+                        "password":$("#inputPassword").val() },
+             success: function(result,status) {
+                //alert(result);
+                if (!result.loginSuccess) {
+                    
+                    alert("Wrong credentials!");
+                    
+                } else {
+                    if (result.isAdmin){
+                        location.href = "/admin"; //redirects to admin route
+                    } else {
+                        location.href = "/search"; //will be route for regular users, not admin page
+                    }
+                    
+                    
+                }
+            }
+            
+        });//ajax
+        
+    });//click
+
+</script>
 </html>
