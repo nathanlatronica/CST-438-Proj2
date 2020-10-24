@@ -11,8 +11,15 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <body class="w3-light-grey">
 
 <!-- w3-content defines a container for fixed size centered content,
-and is wrapped around the whole page content, except for the footer in this example -->
-<div class="w3-content" style="max-width:1500px">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- Custom styles for this template -->
+
+  <div class="w3-content" style="max-width:1500px">
 
 <!-- Header -->
 <header class="w3-container w3-center w3-padding-32">
@@ -32,12 +39,12 @@ and is wrapped around the whole page content, except for the footer in this exam
   <!-- Blog entry -->
   <div class="w3-card-4 w3-margin w3-white">
     <div class="w3-container">
-      <h3><b>Movie #1</b></h3>
+      <h3><b> <%= usersMovies[0].productName %> </b></h3>
     </div>
     <div class="w3-container">
       <span> Tickets you want:  <input id="amount1" type="number" placeholder="0"> </span>
       <p>Number of tickets left: 30 </p>
-      <p>Cost for tickets: $0.00  </p>
+      <p>Cost per ticket: $<%= usersMovies[0].price %>  </p>
 
     </div>
   </div>
@@ -49,12 +56,12 @@ and is wrapped around the whole page content, except for the footer in this exam
   <!-- Blog entry -->
   <div class="w3-card-4 w3-margin w3-white">
     <div class="w3-container">
-      <h3><b>Movie #2</b></h3>
+      <h3><b> <%= usersMovies[1].productName %></b></h3>
     </div>
     <div class="w3-container">
-      <span> Tickets you want:  <input id="amount2" type="number" placeholder="1"> </span>
+      <span> Tickets you want:  <input id="amount2" type="number" placeholder="0"> </span>
       <p>Number of tickets left: 30 </p>
-      <p>Cost for tickets: $7.50 </p>
+      <p>Cost per ticket: $<%= usersMovies[1].price %> </p>
     </div>
   </div>
   <hr>
@@ -65,12 +72,12 @@ and is wrapped around the whole page content, except for the footer in this exam
   <!-- Blog entry -->
   <div class="w3-card-4 w3-margin w3-white">
     <div class="w3-container">
-      <h3><b>Movie #3</b></h3>
+      <h3><b> <%= usersMovies[2].productName %></b></h3>
     </div>
     <div class="w3-container">
-      <span> Tickets you want:  <input id="amount3" type="number" placeholder="3"> </span>
+      <span> Tickets you want:  <input id="amount3" type="number" placeholder="0"> </span>
       <p>Number of tickets left: 30 </p>
-      <p>Cost for tickets: $22.75 </p>
+      <p>Cost per ticket: $<%= usersMovies[2].price %> </p>
     </div>
   </div>
   <hr>
@@ -84,7 +91,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 </div>
 <!-- Footer -->
 <footer class="w3-container w3-grey w3-padding-32 w3-margin-top">
-  <button >Purchase</button>
+  <a href="/loggedIn" class="btn btn-primary my-2">Purchase</a>
 </footer>
 
 </body>

@@ -47,7 +47,7 @@ app.get("/cart",  async function(req, res){
    At this point user is already signed in so you know they exist just have to show their movie picks
 */
 
-  res.render("cart");
+  res.render("cart", {"usersMovies":usersMovies});
 });
 
 app.get("/profile", function(req, res){
